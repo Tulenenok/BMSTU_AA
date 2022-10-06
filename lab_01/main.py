@@ -1,7 +1,7 @@
 import algorithms
 from tools import bcolors
-from tests import unit_tests
-from measure_time import measure_time_exp
+from unit_tests import unit_tests
+from time_memory import measure_time_exp
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
                         "  4. Расстояние Дамерау-Левенштейна рекурсивно c кешем\n"
                         "  5. Все алгоритмы вместе\n"
                         "  6. Автоматическое тестирование \n"
-                        "  7. Замер времени\n"
+                        "  7. Замер памяти и времени\n"
                         f"{bcolors.HEADER}Введите номер команды:{bcolors.ENDC} ")
 
         if command == '0':
