@@ -1,5 +1,5 @@
 import random
-from prettytable import PrettyTable, ORGMODE
+from prettytable import PrettyTable
 import tracemalloc
 from time import time
 
@@ -91,6 +91,40 @@ def measure_time_exp():
 
             lst.reverse()
             row.append(_measure_time(fun, lst))
+
+            tbl.add_row(row)
+
+        print(tbl)
+
+
+FIELD_NAMES_2 = [f'{bcolors.OKCYAN}N{bcolors.ENDC}',
+                 f'{bcolors.OKCYAN}Гномья сортировка{bcolors.ENDC}',
+                 f'{bcolors.OKCYAN}Плавная сортировка{bcolors.ENDC}',
+                 f'{bcolors.OKCYAN}Сортировка бинарным деревом{bcolors.ENDC}']
+
+
+def measure_time_exp_2():
+    TITLES = ["не отсортирован", "отсортирован", "отсортирован в обратном порядке"]
+
+    for j, title in enumerate(TITLES):
+        print('\n', bcolors.BOLD + "Массив " + title + bcolors.ENDC)
+
+        tbl = PrettyTable()
+        tbl.field_names = FIELD_NAMES_2
+        tbl.align = 'l'
+
+        for i in (0, 1, 5, 10, 50, 100, 250):
+            row = [i]
+
+            lst = list(range(i))
+            if j == 1:
+                lst.sort()
+            if j == 2:
+                lst.reverse()
+
+            row.append(_measure_time(gnome_sort, lst))
+            row.append(_measure_time(smooth_sort, lst))
+            row.append(_measure_time(binary_tree_sort, lst))
 
             tbl.add_row(row)
 

@@ -1,0 +1,147 @@
+\chapter{Конструкторская часть}
+В этом разделе будут приведены требования к вводу и прогамме, а также схемы алгоритмов и вычисления трудоемкости данных алгоритмов.
+
+\section{Требования к вводу}
+На вход подаются массив объектов и функция, которая позвояет сравнить два объекта масссива между собой.
+
+\section{Требования к программе}
+При вводе пустого масссива программа не должна аварийно завершатся. Вывод программы - отсортированый по возрастанию массив.
+
+\section{Разработка алгоритмов}
+
+На рисунках \ref{img:alg1}, \ref{img:alg2}, \ref{img:alg3} и \ref{img:alg4} представлены схемы алгоритмов гномьей сортировки, плавной сортировки, построения двоичного дерева поиска и сортировки двоичным деревом соответственно.
+
+\newpage
+\img{230mm}{alg1}{Схема алгоритма гномьей сортировки}
+
+\newpage
+\img{230mm}{alg2}{Схема алгоритма плавной сортировки}
+
+\newpage
+\img{130mm}{alg3}{Схема алгоритма построения двоичного дерева поиска}
+
+\newpage
+\img{230mm}{alg4}{Схема алгоритма сортировки двоичным деревом поиска}
+
+\section{Модель вычислений (оценки трудоемкости)}
+
+Введем модель вычислений, которая потребуется для определния трудоемкости каждого отдельно взятого алгоритма сортировки:
+\begin{enumerate}
+	\item операции из списка (\ref{for:opers}) имеют трудоемкость 1;
+	\begin{equation}
+		\label{for:opers}
+		+, -, /, *, \%, =, ==, !=, <, >, <=, >=, []
+	\end{equation}
+	\item трудоемкость оператора выбора \code{if условие then A else B} рассчитывается, как (\ref{for:if});
+	\begin{equation}
+		\label{for:if}
+		f_{if} = f_{\text{условия}} +
+		\begin{cases}
+			f_A, & \text{если условие выполняется,}\\
+			f_B, & \text{иначе.}
+		\end{cases}
+	\end{equation}
+	\item трудоемкость цикла рассчитывается, как (\ref{for:for});
+	\begin{equation}
+		\label{for:for}
+		f_{for} = f_{\text{инициализации}} + f_{\text{сравнения}} + N(f_{\text{тела}} + f_{\text{инкремент}} + f_{\text{сравнения}})
+	\end{equation}
+	\item трудоемкость вызова функции равна 0.
+\end{enumerate}
+
+\section{Трудоёмкость алгоритмов}
+
+Определим трудоемкость выбранных алгоритмов сортировки по коду. Во всех последующих вычислениях обозначим размер массивов как N.
+
+\subsection{Алгоритм гномьей сортировки}
+
+Трудоёмкость в лучшем случае (при уже отсортированном массиве) (\ref{for:gnome_best}):
+\begin{equation}
+	\label{for:gnome_best}
+    f_{best} = 1 + N(4 + 1) = 5N + 1 = O(N)
+	% f_{best} = -3 + \frac{3}{2} N + \approx \frac{3}{2} N = O(N)
+\end{equation}
+
+Трудоёмкость в худшем случае (при массиве, отсортированном в обратном порядке) (\ref{for:gnome_worst}):
+\begin{equation}
+	\label{for:gnome_worst}
+    f_{worst} = 1 + N(4 + (N - 1) * (7 + 2)) = 9N^2 - 5N + 1 = O(N^2)
+	% f_{worst} = -3 - 8N + 8N^2 \approx 8N^2 = O(N^2)
+\end{equation}
+
+\subsection{Алгоритм плавной сортировки}
+
+Трудоемкость алгоритма плавной сортировки состоит из:
+\begin{itemize}
+	\item Трудоемкости построения Леонардовых деревьев, которая равна (\ref{leo_trees}).
+	\begin{equation}
+		\label{leo_trees}
+		f_{leo\_trees} = 13 N \cdot \log(N) + 7
+	\end{equation}
+	\item Трудоемкости восстановления порядка элеменотов массива, которая равна (\ref{leo_arr}).
+	\begin{equation}
+		\label{leo_arr}
+		f_{main\_loop} = 17 N
+	\end{equation}
+\end{itemize}
+
+Таким образом общая трудоемкость алгоритма выражается как (\ref{leo_total}).
+\begin{equation}
+	\label{leo_total}
+	f_{total} = f_{leo\_trees} + f_{main\_loop}
+\end{equation}
+
+Трудоемкость алгоритма в лучшем случае (\ref{leo_min}).
+\begin{equation}
+	\label{leo_min}
+	f_{best} = O(N)
+\end{equation}
+
+Трудоемкость алгоритма в худщем случае (\ref{leo_max}).
+\begin{equation}
+	\label{leo_max}
+	f_{worst} = O(N\log(N))
+\end{equation}
+
+
+
+\subsection{Алгоритм сортировки бинарным деревом}
+
+Трудоемкость алгоритма сортировки бинарным деревом состоит из:
+\begin{itemize}
+	\item Трудоемкости построения бинарного дерева, которая равна (\ref{make_tree}).
+	\begin{equation}
+		\label{make_tree}
+		f_{make\_tree} = (5 \cdot \log(N) + 3) * N = N \cdot \log(N)
+	\end{equation}
+	\item Трудоемкости восстановления порядка элементов массива, которая равна (\ref{make_arr}):
+	\begin{equation}
+		\label{make_arr}
+		f_{main\_loop} = 7 N
+	\end{equation}
+\end{itemize}
+
+Таким образом общая трудоемкость алгоритма выражается как (\ref{for:been_total}).
+\begin{equation}
+	\label{for:been_total}
+	f_{total} = f_{make\_tree} + f_{main\_loop}
+\end{equation}
+
+Трудоемкость алгоритма в лучшем случае (\ref{been_min}).
+\begin{equation}
+	\label{been_min}
+	f_{best} = O(N\log(N))
+\end{equation}
+
+Трудоемкость алгоритма в худшем случае (\ref{been_max}).
+\begin{equation}
+	\label{been_max}
+	f_{worst} = O(N\log(N))
+\end{equation}
+
+
+\section*{Вывод}
+Были разработаны схемы всех трех алгоритмов сортировки. Для каждого из них были рассчитаны и оценены лучшие и худшие случаи.
+
+
+

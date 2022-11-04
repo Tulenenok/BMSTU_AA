@@ -5,7 +5,7 @@ from algorithms import (
 )
 from tools import bcolors
 from unit_tests import unit_tests
-from time_memory import measure_mem_exp, measure_time_exp
+from time_memory import measure_mem_exp, measure_time_exp_2
 
 
 def main():
@@ -52,7 +52,7 @@ def main():
             measure_mem_exp()
 
         elif command == '4':
-            measure_time_exp()
+            measure_time_exp_2()
 
         else:
             print('Неверный номер команды :(')
