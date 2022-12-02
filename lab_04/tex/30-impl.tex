@@ -1,0 +1,176 @@
+\chapter{Технологическая часть}
+
+В данном разделе были приведены средства реализации и листинги кода.
+
+\section{Средства реализации}
+
+В качестве языка программирования для реализации данной лабораторной работы был выбран язык программирования C++ \cite{Cpp}.
+Данный язык имеет все небходимые инструменты для решения поставленной задачи.
+
+\section{Сведения о модулях программы}
+Программа состоит из трех модулей:
+\begin{enumerate}
+	\item z\_buffer.cpp, z\_buffer.h -- файлы, содержащие реализации алгоритма Z-буффера;
+	\item tools.cpp, tools.h -- файлы, содержащие реализацию вспомогательных функций;
+	\item server\_test.cpp, server\_test.h -- файлы, содержащие реализации тестовой системы.
+\end{enumerate}
+
+
+\section{Реализация алгоритмов}
+В листинге \ref{lst:lst1} представлена линейная реализация алгоритма удаления невидимых граней.
+
+\begin{lstlisting}[label=lst:lst1,caption=Алгоритм постолбцового Z-буффера]
+void process_level(triangle_t *triangle, screen_t *screen, int y, double *depth_arr) {
+
+    int max_x_ind = ind_of_max_of_axis(triangle, 0);
+    int min_x_ind = ind_of_min_of_axis(triangle, 0);
+
+    int max_y_ind = ind_of_max_of_axis(triangle, 1);
+    int min_y_ind = ind_of_min_of_axis(triangle, 1);
+    int mid_y_ind = ind_of_mid_of_axis(triangle, 1);
+
+    double ymax = triangle->processed_vertexes[max_y_ind][1];
+    double ymin = triangle->processed_vertexes[min_y_ind][1];
+    double ymid = triangle->processed_vertexes[mid_y_ind][1];
+    double xmax = triangle->processed_vertexes[max_y_ind][0];
+    double xmin = triangle->processed_vertexes[min_y_ind][0];
+    double xmid = triangle->processed_vertexes[mid_y_ind][0];
+    double zmax = triangle->processed_vertexes[max_y_ind][2];
+    double zmin = triangle->processed_vertexes[min_y_ind][2];
+    double zmid = triangle->processed_vertexes[mid_y_ind][2];
+
+    if (y < triangle->processed_vertexes[min_y_ind][1] || y > triangle->processed_vertexes[max_y_ind][1]) {
+        return;
+    }
+
+    if (max_x_ind == min_x_ind || max_y_ind == min_y_ind) {
+        return;
+    }
+
+    if ((y == triangle->processed_vertexes[max_y_ind][1] || y == triangle->processed_vertexes[min_y_ind][1]) && count_value_with_axis(triangle, 1, y) == 1) {
+        int y_ind = index_with_axis(triangle, 1, y);
+        int x = ceil(triangle->processed_vertexes[y_ind][0]);
+        int z = ceil(triangle->processed_vertexes[y_ind][2]);
+
+        if (x >= 0 && x < screen->width) {
+            if (depth_arr[x] > z) {
+                depth_arr[x] = z;
+                color_pixel(screen, &(triangle->processed_color), x, y);
+            }
+        }
+
+        return;
+    }
+
+    double start_x;
+    double finish_x;
+    double start_z;
+    double finish_z;
+
+    if (y > ymid) {
+        double d_ya = ymax - ymin;
+        double d_xa = xmax - xmin;
+        double d_za = zmax - zmin;
+        start_x = xmin + d_xa * (y - ymin) / d_ya;
+        start_z = zmin + d_za * (y - ymin) / d_ya;
+
+        double d_yb = ymax - ymid;
+        double d_xb = xmax - xmid;
+        double d_zb = zmax - zmid;
+        finish_x = xmid + d_xb * (y - ymid) / d_yb;
+        finish_z = zmid + d_zb * (y - ymid) / d_yb;
+        
+    } else if (y < ymid) {
+
+        double d_ya = ymax - ymin;
+        double d_xa = xmax - xmin;
+        double d_za = zmax - zmin;
+        start_x = xmin + d_xa * (y - ymin) / d_ya;
+        start_z = zmin + d_za * (y - ymin) / d_ya;
+
+        double d_yb = ymid - ymin;
+        double d_xb = xmid - xmin;
+        double d_zb = zmid - zmin;
+        finish_x = xmin + d_xb * (y - ymin) / d_yb;
+        finish_z = zmin + d_zb * (y - ymin) / d_yb;
+
+    } else {
+        double d_ya = ymax - ymin;
+        double d_xa = xmax - xmin;
+        double d_za = zmax - zmin;
+        start_x = xmin + d_xa * (y - ymin) / d_ya;
+        start_z = zmin + d_za * (y - ymin) / d_ya;
+
+        finish_x = xmid;
+        finish_z = zmid;
+    }
+
+    if (start_x > finish_x) {
+        double tmp = start_x;
+        start_x = finish_x;
+        finish_x = tmp;
+        tmp = start_z;
+        start_z = finish_z;
+        finish_z = tmp;
+    }
+
+    if (fabs(finish_x - start_x) < 1e-2) {
+        return;
+    }
+
+    double dz = (finish_z - start_z) / (finish_x - start_x);
+
+    for (int x = ceil(start_x - 1); x < ceil(finish_x + 1); x++) {
+        if (x >= 0 && x < screen->width) {
+            double z = start_z + dz * (x - start_x);
+
+            if (depth_arr[x] > z) {
+                depth_arr[x] = z;
+                color_pixel(screen, &(triangle->processed_color), x, y);
+            }
+        }
+    }
+}
+
+void complete_process_level(screen_t *screen, std::vector<triangle_t*> triangles, int y) {
+
+    if (y < screen->height && y >= 0) {
+        auto *depth_array = (double*) malloc(sizeof(double) * screen->width);
+
+        for (int i = 0; i < screen->width; i++) {
+            depth_array[i] = 1e33;
+        }
+
+        for (int i = 0; i < triangles.size(); i++) {
+            process_level(triangles[i], screen, y, depth_array);
+        }
+
+        for (int x = 0; x < screen->width; x++) {
+            if (not screen->change[x][y] && depth_array[x] == INT_MAX) {
+                color_pixel(screen, &(screen->default_color), x, y);
+            }
+        }
+
+        free(depth_array);
+    }
+}
+
+void z_buffer_render(screen_t *screen, std::vector<triangle_t*> triangles)
+{
+    for (int y = screen->height - 1; y >= 0; y--){
+        complete_process_level(screen, triangles, y);
+    }
+
+}
+\end{lstlisting}
+
+\section{Функциональные тесты}
+
+Тестирование выполнено по методологии белого ящика. Были введены параметры фракталов (цвет, аксиома, набор правил и т.д.). Результат, преобразованный в изображение, приведен на рисунке \ref{img:img1}.
+
+\newpage
+\img{120mm}{img1}{Результат работы алгоритма удаления невидимых граней}
+
+\section*{Вывод}
+
+Был реализован алгоритм удаления невидимых граней, использующий Z-буфер. На его основе были реализованы: последовательная программа и многопоточная программа, которые строят изображение без невидимых граней. Программы были протестированы.
