@@ -1,0 +1,39 @@
+\LTleft=\z@
+\LTright=\fill
+
+\def\LT@makecaption#1#2#3{%                                                    
+  \LT@mcol\LT@cols l{\hbox to\z@{\parbox[t]\LTcapwidth{%  
+         \sbox\@tempboxa{#1{}Продолжение таблицы \@arabic\c@table}%    
+      {\box\@tempboxa\hfil}%
+      \endgraf}%                                              
+    \hss}}}
+
+
+% \setlength\abovecaptionskip{2\p@}
+% \setlength\belowcaptionskip{1\p@}
+
+
+
+% \def\capfigure{figure}
+
+% \def\captable{table}
+
+% \long\def\@makecaption#1#2{%
+
+%   \vskip\abovecaptionskip
+
+%   \ifx\@captype\capfigure
+
+%       \centering #1~--~#2 \par
+
+%   \else
+
+%       #1~--~#2 \par
+
+%   \fi
+
+%   \vskip\belowcaptionskip}
+
+
+
+% \renewcommand{\@biblabel}[1]{#1}

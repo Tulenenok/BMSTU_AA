@@ -1,10 +1,15 @@
-\chapter*{Приложение 2}
-\addcontentsline{toc}{chapter}{Приложение 2}
+\chapter*{Приложение Б}
+\addcontentsline{toc}{chapter}{Приложение Б}
 
 \begin{center}
     \captionsetup{justification=raggedright,singlelinecheck=off}    
     \begin{longtable}[c]{|l|l|l|l|l|}
         \caption{Параметризация для класса данных 2\label{tbl:param_kd1}}\\ \hline
+        \endfirsthead
+        \captionsetup{labelformat=continued, labelsep=quad}%
+        \caption{\space}\\
+        \endhead
+        
         $\alpha$ & $\rho$ & days & ideal & mistake
         \csvreader{data/class2_result.txt}{}
 			{\\ \hline \csvcoli & \csvcolii & \csvcoliii & \csvcoliv & \csvcolv}
