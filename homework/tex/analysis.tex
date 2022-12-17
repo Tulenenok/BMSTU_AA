@@ -1,0 +1,67 @@
+\chapter{Технологическая часть}
+
+\section{Выбор языка программирования}
+
+При выполнении домашнего задания использовался язык программирования С++ \cite{Cpp}.
+
+\section{Исходный код программы}
+
+В листинге \ref{lst:sort} представлена реализация алгоритма Z-буфера.
+
+
+\begin{lstlisting}[label=lst:sort,caption=Алгоритм Z-буфера]
+screen_t *screen;                                   // (1)
+std::vector<triangle_t*> triangles;                 // (2) 
+screen.init();                                      // (3)
+triangles.init();                                   // (4) 
+
+for (int y = screen->height - 1; y >= 0; y--)       // (5)
+{     
+    if (y < screen->height && y >= 0)               // (6)
+    {             
+        auto *depth_array = (double*) malloc(sizeof(double) * screen->width); // (7)
+
+        for (int i = 0; i < screen->width; i++)     // (8)                          
+            depth_array[i] = 1e33;                  // (9)
+
+        for (int i = 0; i < triangles.size(); i++)  // (10)
+            process_level(triangles[i], screen, y, depth_array);         // (11)   
+
+        for (int x = 0; x < screen->width; x++)     // (12)
+            if (not screen->change[x][y] && depth_array[x] == INT_MAX)   // (13) 
+                color_pixel(screen, &(default_color), x, y); // (14)
+
+        free(depth_array);                          // (15)
+    }
+}
+
+screen.set_all_pixel_true();                       // (16)  
+screen.convert();                                  // (17)
+screen.show();                                     // (18)  
+screen.set_all_pixel_false();                      // (19)  
+screen.free()                                      // (20)  
+triangles.free()                                   // (21) 
+\end{lstlisting}
+
+\section{Модели программ}
+
+На рисунке \ref{img:s1} представлен граф управления программы.
+
+На рисунке \ref{img:s2} представлен информационный граф программы.
+
+На рисунке \ref{img:s3} представлена операционная история программы.
+
+На рисунке \ref{img:s4} представлена информационная история программы.
+
+\begin{landscape}
+\img{40mm}{s1}{Граф управления программы}
+
+\img{90mm}{s2}{Информационный граф программы}
+
+\img{130mm}{s3}{Операционная история программы}
+
+\img{120mm}{s4}{Инфомационная история программы}
+
+\end{landscape}
+
+
