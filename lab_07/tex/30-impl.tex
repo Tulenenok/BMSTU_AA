@@ -1,0 +1,60 @@
+\chapter{Технологическая часть}
+
+В данном разделе были приведены средства реализации и листинги кода.
+
+\section{Средства реализации}
+
+В качестве языка программирования для реализации данной лабораторной работы был выбран язык программирования Python \cite{pythonlang}. Данный язык имеет все инструменты для решения поставленной задачи.
+
+\section{Сведения о модулях программы}
+Программа состоит из трех модулей:
+\begin{enumerate}
+	\item algorithms.py - хранит реализацию алгоритма поиска в словаре;
+	\item unit\_tests.py - хранит реализацию тестирующей системы и тесты;
+	\item tools.py - хранит реализацию вспомогательных функций.
+\end{enumerate}
+
+
+\section{Реализация алгоритмов}
+
+В листинге \ref{lst:bfs} представлен алгоритм полного перебора.
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off}
+	
+	\begin{lstlisting}[label=lst:bfs,caption=Реализация алгоритма поиска полным перебором]
+		def BruteForceSearch(self, key):
+			k = 0
+			kk = list(self.data.keys())
+			for elem in self.data:
+			k += 1
+			if key == elem:
+				// Writing to the log file 
+				self.f.write(f"{kk.index(key)},{key},{k}\n") 
+				return self.data[elem]
+			return -1
+	\end{lstlisting}
+\end{center}
+
+\section{Тестирование}
+
+В данном разделе приведена таблица с тестами (таблица \ref{table:ref1}). Все тесты пройдены успешно.
+
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off}
+	\begin{table}[ht]
+		\centering
+		\caption{Функциональные тесты}
+		\label{table:ref1}
+		\begin{tabular}{ |c|c|c|}
+			\hline
+			\textbf{Входные данные}    & \textbf{Пояснение}   	  & \textbf{Результат}    \\ \hline
+			большое			  & Средний элемент   & Ответ верный \\ \hline
+			маленькое 		  & Первый элемент    & Ответ верный \\ \hline
+			среднее 		  & Последний элемент & Ответ верный \\ \hline
+			мяу & Несуществующий элемент & Ответ верный (-1) \\ \hline
+		\end{tabular}
+	\end{table}
+\end{center}
+
+\section*{Вывод}
+В данном разделе была представлена реализация алгоритма полного перебора. Алгоритм был протестирован. 
